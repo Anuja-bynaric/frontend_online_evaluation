@@ -5,7 +5,8 @@ const Navbar = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-blue-900 text-white px-6 py-4 shadow-md flex justify-between items-center h-[10%]">
+    <nav className="fixed top-0 left-0 w-full h-16 bg-blue-900 text-white px-6 shadow-md flex justify-between items-center z-50">
+
 
       
       <h1

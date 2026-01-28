@@ -1,10 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
 
 const UploadForm = ({ setForm }) => {
+  const [file, setFile] = useState(null);
+  const [barcode, setBarcode] = useState('');
+  const [pageNumber, setPageNumber] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setForm(false);
+
+    try {
+      const data = new FormData();
+      data.append('file', file);
+      data.append('barcode', barcode);
+      data.append('no_of_pages', pageNumber);
+
+      await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/upload`,
+        data
+      );
+
+      setForm(false); // close form on success
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Upload failed');
+    }
   };
 
   return (
@@ -19,27 +39,33 @@ const UploadForm = ({ setForm }) => {
       <input
         type="text"
         placeholder="Enter barcode"
+        value={barcode}
+        onChange={(e) => setBarcode(e.target.value)}
         required
-        className="w-full mb-4 sm:mb-5 px-3 sm:px-4 py-2 sm:py-3 rounded-md bg-blue-800 placeholder-blue-400 text-white border border-transparent focus:outline-none focus:border-blue-400 transition"
+        className="w-full mb-4 px-4 py-2 rounded-md bg-blue-800 text-white placeholder-blue-400 focus:outline-none"
       />
 
       <input
         type="file"
+        accept="application/pdf"
+        onChange={(e) => setFile(e.target.files[0])}
         required
-        className="w-full mb-4 sm:mb-5 px-3 sm:px-4 py-2 sm:py-3 rounded-md bg-blue-800 text-white border border-transparent focus:outline-none focus:border-blue-400 transition"
+        className="w-full mb-4 px-4 py-2 rounded-md bg-blue-800 text-white"
       />
 
       <input
         type="number"
         placeholder="Enter number of pages"
+        value={pageNumber}
+        onChange={(e) => setPageNumber(e.target.value)}
         required
         min={1}
-        className="w-full mb-5 sm:mb-7 px-3 sm:px-4 py-2 sm:py-3 rounded-md bg-blue-800 placeholder-blue-400 text-white border border-transparent focus:outline-none focus:border-blue-400 transition"
+        className="w-full mb-6 px-4 py-2 rounded-md bg-blue-800 text-white placeholder-blue-400"
       />
 
       <button
         type="submit"
-        className="w-full bg-white text-blue-900 font-semibold py-2 sm:py-3 rounded-md hover:bg-blue-100 transition"
+        className="w-full bg-white text-blue-900 font-semibold py-2 rounded-md hover:bg-blue-100 transition"
       >
         Submit
       </button>
